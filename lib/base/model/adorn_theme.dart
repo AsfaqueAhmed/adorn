@@ -12,6 +12,10 @@ abstract class AdornTheme {
 
   abstract Color textColor1;
 
+  Color statusBarColor = Colors.transparent;
+
+  Brightness statusBarIconBrightness = Brightness.light;
+
   Color? textColor2;
   Color? textColor3;
 
@@ -35,8 +39,8 @@ abstract class AdornTheme {
     textColor2 ??= textColor1.lighten(25);
     textColor3 ??= textColor1.lighten(50);
 
-    backgroundColor2??=backgroundColor;
-    backgroundColor3??=backgroundColor;
+    backgroundColor2 ??= backgroundColor;
+    backgroundColor3 ??= backgroundColor;
   }
 
   Color errorColor = Colors.red;

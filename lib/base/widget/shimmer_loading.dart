@@ -32,7 +32,7 @@ class _ShimmerLoadingState extends State<ShimmerLoading>
   initState() {
     _shimmerController = AnimationController.unbounded(vsync: this)
       ..repeat(min: -0.5, max: 1.5, period: const Duration(milliseconds: 1000));
-    _shimmerGradient = widget.shimmerGradient ?? LinearGradient(
+    _shimmerGradient = widget.shimmerGradient ?? const LinearGradient(
       colors: [
         Color(0xFFEBEBF4),
         Color(0xFFF4F4F4),

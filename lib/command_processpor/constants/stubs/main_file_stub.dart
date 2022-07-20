@@ -3,7 +3,7 @@ part of 'stubs.dart';
 String mainFileStub = '''import 'package:flutter/material.dart';
 
 import 'package:adorn/base/bloc/bloc.dart';
-import 'package:adorn/base/widget/themed_app.dart';
+import 'package:adorn/base/widget/adorn_app.dart';
 import 'route.dart';
 
 import 'res/themes/adorn_dark_theme.dart';
@@ -23,9 +23,10 @@ class Application extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocContainer(
-      child: ThemedApp(
+      child: AdornApp(
         darkTheme: AdornDarkTheme(),
         theme: AdornLightTheme(),
+        currentLanguage:"en",
         appBuilder: (context, theme) => MaterialApp(
           title: appName,
           theme: theme,

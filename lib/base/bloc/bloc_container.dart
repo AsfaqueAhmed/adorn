@@ -7,7 +7,7 @@ class BlocContainer extends StatefulWidget {
   BlocContainer({
     Key? key,
     required this.child,
-    this.registeredBlocs = const  <BaseBloc>[],
+    this.registeredBlocs = const <BaseBloc>[],
   }) : super(key: key);
 
   static BlocContainer of(BuildContext context) {
@@ -31,8 +31,9 @@ class BlocContainer extends StatefulWidget {
     );
   }
 
-  Bloc getBloc<Bloc extends BaseBloc>() {
-    return (registeredBlocs.firstWhere((element) => element is Bloc) as Bloc);
+  Bloc? getBloc<Bloc extends BaseBloc>() {
+    var list = registeredBlocs.where((element) => element is Bloc).toList();
+    return list.isEmpty ? null : list[0] as Bloc;
   }
 
   closeAllBloc() {

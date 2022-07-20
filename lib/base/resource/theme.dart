@@ -172,9 +172,7 @@ getTheme({required AdornTheme theme}) {
     backgroundColor: theme.backgroundColor,
     colorScheme: ColorScheme(
         primary: theme.primaryColor,
-        primaryVariant: theme.primaryColor,
         secondary: theme.secondaryColor,
-        secondaryVariant: theme.secondaryColor,
         surface: theme.backgroundColor,
         background: theme.backgroundColor,
         error: theme.errorColor,

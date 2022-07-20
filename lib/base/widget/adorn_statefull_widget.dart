@@ -8,4 +8,6 @@ abstract class AdornStatefulWidget extends StatefulWidget {
   State<StatefulWidget> createState() {
     throw UnimplementedError();
   }
+
+  String getRouteName() => this.runtimeType.toString();
 }

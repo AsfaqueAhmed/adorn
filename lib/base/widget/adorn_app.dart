@@ -5,32 +5,33 @@ import 'package:adorn/base/resource/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-///create a folder named bloc and pless this file there
-class ThemedApp extends StatefulWidget {
-  ThemedApp({
+class AdornApp extends StatefulWidget {
+  AdornApp({
     Key? key,
     required this.appBuilder,
     AdornTheme? theme,
     AdornTheme? darkTheme,
+    this.currentLanguage,
   })
       : theme = {
     "light": theme ?? AdornLightTheme(),
     'dark': darkTheme ?? AdornDarkTheme(),
   },
-        super(key: key ?? GlobalKey<_ThemedAppState>());
+        super(key: key ?? GlobalKey<_AdornAppState>());
 
-  ThemedApp.multiTheme({
+  AdornApp.multiTheme({
     Key? key,
     required this.appBuilder,
     required this.theme,
-  }) : super(key: key ?? GlobalKey<_ThemedAppState>());
+    this.currentLanguage,
+  }) : super(key: key ?? GlobalKey<_AdornAppState>());
 
   final BuildApp appBuilder;
-  final Map<String, AdornTheme?> theme;
+  final Map<String, AdornTheme> theme;
+  final String? currentLanguage;
 
-  static ThemedApp? of(BuildContext context) {
-    final ThemedApp? result =
-    context.findAncestorWidgetOfExactType<ThemedApp>();
+  static AdornApp? of(BuildContext context) {
+    final AdornApp? result = context.findAncestorWidgetOfExactType<AdornApp>();
     assert(result != null, 'No Themed APP found in context');
     return result;
   }
@@ -38,35 +39,46 @@ class ThemedApp extends StatefulWidget {
   switchTheme({String? themeName}) {
     int availableTheme = 0;
     theme.forEach((key, value) {
-      if (value != null) availableTheme++;
+      availableTheme++;
     });
     if (availableTheme > 1) {
-      (key as GlobalKey<_ThemedAppState>).currentState!.switchTheme(themeName);
+      (key as GlobalKey<_AdornAppState>).currentState!.switchTheme(themeName);
     }
   }
 
-  getCurrentTheme() {
-    return (key as GlobalKey<_ThemedAppState>).currentState!.currentTheme;
+  switchLanguage({required String language}) {
+    (key as GlobalKey<_AdornAppState>).currentState!.switchLanguage(language);
+  }
+
+  AdornTheme getCurrentTheme() {
+    return (key as GlobalKey<_AdornAppState>).currentState!.currentTheme;
+  }
+
+  String getCurrentLanguage() {
+    return (key as GlobalKey<_AdornAppState>).currentState!.currentLanguage;
   }
 
   @override
-  _ThemedAppState createState() => _ThemedAppState();
+  _AdornAppState createState() => _AdornAppState();
 }
 
-class _ThemedAppState extends State<ThemedApp>
+class _AdornAppState extends State<AdornApp>
     with SingleTickerProviderStateMixin {
   late AnimationController _themeAnimation;
 
   String currentThemeName = '';
   String changedThemeName = '';
 
-  AdornTheme? currentTheme;
+  String currentLanguage = "en";
+
+  late AdornTheme currentTheme;
   AdornTheme? changedTheme;
 
   @override
   void initState() {
+    currentLanguage = widget.currentLanguage ?? 'en';
     currentThemeName = "light";
-    currentTheme = widget.theme[currentThemeName];
+    currentTheme = widget.theme[currentThemeName]!;
     _themeAnimation = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 150));
     super.initState();
@@ -81,18 +93,20 @@ class _ThemedAppState extends State<ThemedApp>
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: currentTheme?.brightness == Brightness.dark
-            ? Brightness.light
-            : Brightness.dark,
-      ), child: widget.appBuilder(context, getTheme(theme: currentTheme!)),);
+      value: currentTheme.brightness == Brightness.light ? SystemUiOverlayStyle
+          .dark.copyWith(
+        statusBarColor: currentTheme.statusBarColor,
+      ) : SystemUiOverlayStyle.light.copyWith(
+        statusBarColor: currentTheme.statusBarColor,
+      ),
+      child: widget.appBuilder(context, getTheme(theme: currentTheme)),
+    );
   }
 
   void switchTheme(String? themeName) {
     if (themeName == null) {
       widget.theme.forEach((key, value) {
-        if (value != null && currentThemeName != key) {
+        if (currentThemeName != key) {
           changedTheme = value;
           changedThemeName = key;
         }
@@ -104,11 +118,17 @@ class _ThemedAppState extends State<ThemedApp>
 
     if (mounted) {
       setState(() {
-        currentTheme = changedTheme;
+        currentTheme = changedTheme!;
         currentThemeName = changedThemeName;
         _themeAnimation.value = 0;
       });
     }
+  }
+
+  void switchLanguage(String language) {
+    setState(() {
+      currentLanguage = language;
+    });
   }
 }
 
